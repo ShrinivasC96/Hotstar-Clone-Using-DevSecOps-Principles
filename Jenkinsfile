@@ -1,20 +1,24 @@
 pipeline {
-  agent any
-  stages {
-    stage('checkout code'){
-        steps {
-          checkout scm
+    agent any
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
         }
-    }
-    stage('Build Docker Image') {
+
+        stage('Build Docker Image') {
             steps {
                 sh 'docker build -t hotstar-clone .'
             }
         }
-    stage('Security scan - trivy) {
-          step {
-            sh 'trivy image hotstar-clone'
-          }
+
+        stage('Security Scan - Trivy') {
+            steps {
+                sh 'trivy image hotstar-clone'
+            }
+        }
     }
-  }
 }
