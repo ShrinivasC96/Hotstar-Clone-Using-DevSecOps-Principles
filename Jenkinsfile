@@ -11,5 +11,10 @@ pipeline {
                 sh 'docker build -t hotstar-clone .'
             }
         }
+    stage('Security scan - trivy) {
+          step {
+            sh 'trivy image hotstar-clone'
+          }
+    }
   }
 }
