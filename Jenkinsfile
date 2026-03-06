@@ -29,8 +29,8 @@ pipeline {
 
         stage('Push Image') {
             steps {
-                sh 'docker tag hotstar-clone $DOCKER_USER/hotstar-clone:latest'
-                sh 'docker push $DOCKER_USER/hotstar-clone:latest'
+                sh 'docker tag hotstar-clone shrinivas2616/hotstar-clone:latest'
+                sh 'docker push shrinivas2616/hotstar-clone:latest'
             }
         }
 
