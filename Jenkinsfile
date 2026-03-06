@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "shrinivas2616/hotstar-clone"
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -9,9 +13,21 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Trivy File Scan') {
+            steps {
+                sh 'trivy fs .'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t hotstar-clone .'
+                sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
 
@@ -29,19 +45,15 @@ pipeline {
 
         stage('Push Image') {
             steps {
-                sh 'docker tag hotstar-clone shrinivas2616/hotstar-clone:latest'
-                sh 'docker push shrinivas2616/hotstar-clone:latest'
-            }
-        }
-        stage('Run Container') {
-            steps {
-                sh '''
-                docker stop hotstar-container || true
-                docker rm hotstar-container || true
-                docker run -d -p 3000:80 --name hotstar-container shrinivas2616/hotstar-clone:latest
-                '''
+                sh 'docker push $DOCKER_IMAGE:latest'
             }
         }
 
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
     }
 }
