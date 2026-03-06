@@ -33,6 +33,15 @@ pipeline {
                 sh 'docker push shrinivas2616/hotstar-clone:latest'
             }
         }
+        stage('Run Container') {
+            steps {
+                sh '''
+                docker stop hotstar-container || true
+                docker rm hotstar-container || true
+                docker run -d -p 3000:80 --name hotstar-container shrinivas2616/hotstar-clone:latest
+                '''
+            }
+        }
 
     }
 }
